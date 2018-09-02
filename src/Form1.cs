@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -40,7 +38,17 @@ namespace spn
             var cur = getWebCode("http://www.mcbbs.net/forum.php?mod=forumdisplay&fid=110&filter=typeid&typeid=2482", "UTF-8");
             var regex = new Regex(
                 "class=\"s xst\">(.*?)</a>");
-            return regex.Match(cur).Value.Replace("class=\"s xst\">", "").Replace("</a>", "");
+            var ans = regex.Match(cur).Value.Replace("class=\"s xst\">", "").Replace("</a>", "");
+            var speechSynthesizer = new SpeechSynthesizer();
+            if (ans == "")
+            {
+                speechSynthesizer.Speak("MCBBS 崩溃了。");
+                return curQues;
+            }
+            else
+            {
+                return ans;
+            }
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -52,8 +60,7 @@ namespace spn
         {
             for (int i = 0; i < 2; i++)
             {
-                Console.Beep(1500, 600);
-                SpeechSynthesizer speechSynthesizer = new SpeechSynthesizer();
+                var speechSynthesizer = new SpeechSynthesizer();
                 speechSynthesizer.Speak($"出现新问题：{curQues}。");
                 Thread.Sleep(400);
             }
@@ -74,10 +81,10 @@ namespace spn
         {
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                Stream receiveStream = response.GetResponseStream();
-                StreamReader readStream = new StreamReader(receiveStream, Encoding.GetEncoding(encoder));
+                var request = (HttpWebRequest)WebRequest.Create(url);
+                var response = (HttpWebResponse)request.GetResponse();
+                var receiveStream = response.GetResponseStream();
+                var readStream = new StreamReader(receiveStream, Encoding.GetEncoding(encoder));
                 string SourceCode = readStream.ReadToEnd();
                 response.Close();
                 readStream.Close();
@@ -93,11 +100,12 @@ namespace spn
         private void button1_Click(object sender, EventArgs e)
         {
             oldQues = getQuestion();
-            SpeechSynthesizer speechSynthesizer = new SpeechSynthesizer();
+            var speechSynthesizer = new SpeechSynthesizer();
             speechSynthesizer.SpeakAsync($"当前最新问题：{oldQues}。");
 
             textBox1.Text = "";
             button1.Enabled = false;
+            cnt = 1;
             timer1.Enabled = true;
         }
     }
