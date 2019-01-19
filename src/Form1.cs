@@ -35,7 +35,7 @@ namespace spn
 
         private string getQuestion()
         {
-            var cur = getWebCode("http://www.mcbbs.net/forum.php?mod=forumdisplay&fid=110&filter=typeid&typeid=2482", "UTF-8");
+            var cur = getWebCode("http://www.mcbbs.net/forum-qanda-1.html", "UTF-8");
             var regex = new Regex(
                 "class=\"s xst\">(.*?)</a>");
             var ans = regex.Match(cur).Value.Replace("class=\"s xst\">", "").Replace("</a>", "");
