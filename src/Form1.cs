@@ -6,6 +6,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Speech.Synthesis;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace spn
 {
@@ -13,6 +14,7 @@ namespace spn
     {
         string oldQues = "";
         string curQues = "";
+        string tid = "";
         int cnt = 1;
 
         public Form1()
@@ -36,9 +38,11 @@ namespace spn
         private string getQuestion()
         {
             var cur = getWebCode("http://www.mcbbs.net/forum-qanda-1.html", "UTF-8");
-            var regex = new Regex(
-                "class=\"s xst\">(.*?)</a>");
-            var ans = regex.Match(cur).Value.Replace("class=\"s xst\">", "").Replace("</a>", "");
+            var tidRegex = new Regex("<tbody id=\"normalthread_\\d+\">");
+            var tid = tidRegex.Match(cur).Value.Replace("<tbody id=\"normalthread_", "").Replace("\">", "");
+            this.tid = tid;
+            var regex = new Regex("class=\"s xst\">(.*?)</a>");
+            var ans = regex.Match(cur.Substring(cur.IndexOf(tid))).Value.Replace("class=\"s xst\">", "").Replace("</a>", "");
             var speechSynthesizer = new SpeechSynthesizer();
             if (ans == "")
             {
@@ -107,6 +111,12 @@ namespace spn
             button1.Enabled = false;
             cnt = 1;
             timer1.Enabled = true;
+        }
+
+        private void textBox1_DoubleClick(object sender, EventArgs e)
+        {
+            var url = $"http://www.mcbbs.net/thread-{tid}-1-1.html";
+            Process.Start(url);
         }
     }
 }
