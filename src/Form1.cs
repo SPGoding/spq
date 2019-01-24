@@ -62,12 +62,8 @@ namespace spn
 
         private void changed()
         {
-            for (int i = 0; i < 2; i++)
-            {
-                var speechSynthesizer = new SpeechSynthesizer();
-                speechSynthesizer.Speak($"出现新问题：{curQues}。");
-                Thread.Sleep(400);
-            }
+            var speechSynthesizer = new SpeechSynthesizer();
+            speechSynthesizer.Speak($"出现新问题：{curQues}。");
             timer1.Enabled = false;
             button1.Enabled = true;
         }
@@ -105,7 +101,7 @@ namespace spn
         {
             oldQues = getQuestion();
             var speechSynthesizer = new SpeechSynthesizer();
-            speechSynthesizer.SpeakAsync($"当前最新问题：{oldQues}。");
+            speechSynthesizer.Speak($"当前最新问题：{oldQues}。");
 
             textBox1.Text = "";
             button1.Enabled = false;
